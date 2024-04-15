@@ -1,4 +1,5 @@
-# Donde_El_Compay
+# CRUD INVENTARIO
+
 Sistema de inventario y facturacion hecho con Django/ Stock and bill system made with Django
 
 El sistema permite realizar operaciones basicas de inventario y facturacion:
