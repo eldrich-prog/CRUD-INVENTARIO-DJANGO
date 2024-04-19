@@ -404,9 +404,13 @@ class ImportarProductos(LoginRequiredMixin, View):
 
     def post(self,request):
         form = ImportarProductosFormulario(request.POST)
-        if form.is_valid():
-            request.session['productosImportados'] = True
+        try: 
+            if form.is_valid():
+                request.session['productosImportados'] = True
+        except:
+            messages.error(request, 'No se pudo importar producto, intente de nuevo.')
             return HttpResponseRedirect("/inventario/importarProductos")
+
 
     def get(self,request):
         form = ImportarProductosFormulario()
@@ -415,7 +419,7 @@ class ImportarProductos(LoginRequiredMixin, View):
             importado = request.session.get('productoImportados')
             contexto = { 'form':form,'productosImportados': importado  }
             request.session['productosImportados'] = False
-
+        
         else:
             contexto = {'form':form}
             contexto = complementarContexto(contexto,request.user) 
@@ -702,16 +706,26 @@ class EmitirFactura(LoginRequiredMixin, View):
     login_url = '/inventario/login'
     redirect_field_name = None
 
+    def verify_cliente(self, cliente):
+        if cliente:
+            return True
+        else:
+            return False
+
     def post(self, request):
         # Crea una instancia del formulario y la llena con los datos:
         cedulas = Cliente.cedulasRegistradas()
-        form = EmitirFacturaFormulario(request.POST,cedulas=cedulas)
+        form = EmitirFacturaFormulario(request.POST, cedulas=cedulas)
         # Revisa si es valido:
         if form.is_valid():
-            # Procesa y asigna los datos con form.cleaned_data como se requiere
-            request.session['form_details'] = form.cleaned_data['productos']
-            request.session['id_client'] = form.cleaned_data['cliente']
-            return HttpResponseRedirect("detallesDeFactura")
+            try:
+                #Procesa y asigna los datos con form    .cleaned_data como se requiere
+                request.session['form_details'] = form.cleaned_data['productos']
+                request.session['id_client'] = form.cleaned_data['cliente']
+                return HttpResponseRedirect("detallesDeFactura")
+            except:
+                messages.error(request, 'No se pudo emitir la factura, intente de nuevo.')
+                return HttpResponseRedirect("/inventario/emitirFactura")
         else:
             #De lo contrario lanzara el mismo formulario
             return render(request, 'inventario/factura/emitirFactura.html', {'form': form})
@@ -1126,10 +1140,14 @@ class AgregarPedido(LoginRequiredMixin, View):
         form = EmitirPedidoFormulario(request.POST,cedulas=cedulas)
         # Revisa si es valido:
         if form.is_valid():
-            # Procesa y asigna los datos con form.cleaned_data como se requiere
-            request.session['form_details'] = form.cleaned_data['productos']
-            request.session['id_proveedor'] = form.cleaned_data['proveedor']
-            return HttpResponseRedirect("detallesPedido")
+            try:
+                # Procesa y asigna los datos con form.cleaned_data como se requiere
+                request.session['form_details'] = form.cleaned_data['productos']
+                request.session['id_proveedor'] = form.cleaned_data['proveedor']
+                return HttpResponseRedirect("detallesPedido")
+            except:               
+                messages.error(request, 'No se pudo emitir el pedido, intente de nuevo.')
+                return HttpResponseRedirect("/inventario/agregarPedido")
         else:
             #De lo contrario lanzara el mismo formulario
             return render(request, 'inventario/pedido/emitirPedido.html', {'form': form})

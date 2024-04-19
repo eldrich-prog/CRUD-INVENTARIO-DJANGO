@@ -1596,6 +1596,7 @@ function validarTodo(tipo)
 	if(tipo == 'factura')
 	{
 		let productos = document.getElementById('productos')
+		let cliente = document.getElementById('cliente')
 
 		if( (isNaN(parseFloat(productos.value)) ) )
 		{
@@ -1604,7 +1605,7 @@ function validarTodo(tipo)
 			 "-En el campo de productos solo pueden ir digitos. </p>"			
 		}
 
-		if( productos.value <= 0 )
+		if( productos.value <= 0 || cliente.value == 0)
 		{
 			error = true
 			mensaje += "<p class='" + claseErrores +"'>" +

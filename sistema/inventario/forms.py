@@ -146,10 +146,10 @@ class ClienteFormulario(forms.ModelForm):
 
 
 class EmitirFacturaFormulario(forms.Form):
+
     def __init__(self, *args, **kwargs):
        elecciones = kwargs.pop('cedulas')
        super(EmitirFacturaFormulario, self).__init__(*args, **kwargs)
-
        if(elecciones):
             self.fields["cliente"] = forms.CharField(label="Cliente a facturar",max_length=50,
             widget=forms.Select(choices=elecciones,

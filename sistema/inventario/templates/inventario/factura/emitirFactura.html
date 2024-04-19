@@ -24,7 +24,7 @@
         {%endif%}       
 
 		<div class="card card-block sameheight-item">
-			<form role="form" method="POST"onsubmit="return validarTodo('factura')">
+			<form role="form" method="POST"onsubmit=" return validarTodo('factura')">
 			{% csrf_token %}
 
 				{% for field in form %}
